@@ -1,25 +1,21 @@
 const express = require('express')
 
+const {auth, validation, ctrlWrapper} = require("../../middlrwares");
+const {joiSchema, favoriteJoiSchema} = require("../../models/contact");
+const {contacts: ctrl} = require("../../controllers");
+
 const router = express.Router()
 
-router.get('/', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.get('/', auth, ctrlWrapper(ctrl.getAll));
 
-router.get('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.get('/:id', auth, ctrlWrapper(ctrl.getById));
 
-router.post('/', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.post('/', auth, validation(joiSchema), ctrlWrapper(ctrl.add));
 
-router.delete('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.put('/:id', auth, validation(joiSchema), ctrlWrapper(ctrl.updateById));
 
-router.put('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.patch('/:id/favorite', auth, validation(favoriteJoiSchema), ctrlWrapper(ctrl.updateFavorite));
 
-module.exports = router
+router.delete('/:id', auth, ctrlWrapper(ctrl.removeById));
+
+module.exports = router;
